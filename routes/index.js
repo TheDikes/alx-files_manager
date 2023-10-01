@@ -1,6 +1,7 @@
 import express from 'express';
 import AppController from '../controllers/AppController';
 import UserController from '../controllers/UserController';
+import AuthController from '../controllers/AuthController';
 
 function Routing(app) {
   const router = express.Router();
@@ -16,5 +17,18 @@ function Routing(app) {
   router.post('/users', (req, res) => {
     UserController.postNew(req, res);
   });
+
+  router.get('/connect', (req, res) => {
+    AuthController.getConnect(req, res);
+  });
+
+  router.get('/disconnect', (req, res) => {
+    AuthController.getDisconnect(req, res);
+  });
+
+  router.get('/users/me', (req, res) => {
+    UsersController.getMe(req, res);
+  });
 }
+
 export default Routing;
