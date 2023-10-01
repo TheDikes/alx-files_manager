@@ -1,9 +1,10 @@
 import { MongoClient } from 'mongodb';
+require('dotenv').config();
 
 const DB_HOST = process.env.DB_HOST || 'localhost';
 const DB_PORT = process.env.DB_PORT || 27017;
 const DB_DATABASE = process.env.DB_DATABASE || 'files_manager';
-const url = `mongodb://${DB_HOST}:${DB_PORT}`;
+const url = process.env.DB_URL || `mongodb://${DB_HOST}:${DB_PORT}`;
 
 class DBClient {
   constructor() {
