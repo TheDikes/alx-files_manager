@@ -3,7 +3,7 @@ import AppController from '../controllers/AppController';
 import UserController from '../controllers/UserController';
 import AuthController from '../controllers/AuthController';
 
-function Routing (app) {
+function Routing(app) {
   const router = express.Router();
   app.use('/', router);
 

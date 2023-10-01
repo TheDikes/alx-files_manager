@@ -4,7 +4,7 @@ import redisClient from '../utils/redis';
 import dbClient from '../utils/db';
 
 class AuthController {
-  static async getConnect (req, res) {
+  static async getConnect(req, res) {
     const Authorization = req.header('Authorization') || '';
 
     const creds = Authorization.split(' ')[1];
@@ -19,7 +19,7 @@ class AuthController {
 
     const user = await dbClient.users.findOne({
       email,
-      password: secPass
+      password: secPass,
     });
     if (!user) return res.status(401).send({ error: 'Unauthorized' });
 
@@ -32,7 +32,7 @@ class AuthController {
     return res.status(200).send({ token });
   }
 
-  static async getDisconnect (req, res) {
+  static async getDisconnect(req, res) {
     const token = req.headers['x-token'];
     const userId = await redisClient.get(`auth_${token}`);
 
