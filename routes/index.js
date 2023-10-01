@@ -1,7 +1,7 @@
 import express from 'express';
-import { AppController } from '../controllers/AppController';
+import AppController from '../controllers/AppController';
 
-function Routing (app) {
+function Routing(app) {
   const router = express.Router();
   app.use('/', router);
 
