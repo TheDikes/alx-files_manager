@@ -10,7 +10,7 @@ class FilesController {
   /**
    * Should create a new file in DB and in disk
    */
-  static async postUpload(request, response) {
+  static async postUpload (request, response) {
     const fileQueue = new Queue('fileQueue');
     // Retrieve the user based on the token
     const userId = await findUserByToken(request);
@@ -46,7 +46,7 @@ class FilesController {
         name,
         type,
         isPublic,
-        parentId: parentId === 0 ? parentId : ObjectID(parentId),
+        parentId: parentId === 0 ? parentId : ObjectID(parentId)
       });
     // if not folder, store file in DB unscrambled
     } else {
@@ -73,7 +73,7 @@ class FilesController {
         type,
         isPublic,
         parentId: parentId === 0 ? parentId : ObjectID(parentId),
-        localPath,
+        localPath
       });
 
       // if the file is an image, save it in binary
@@ -85,13 +85,13 @@ class FilesController {
 
     // Return the new file with a status code 201
     return response.status(201).json({
-      id: fileInserted.ops[0]._id, userId, name, type, isPublic, parentId,
+      id: fileInserted.ops[0]._id, userId, name, type, isPublic, parentId
     });
   }
 
   // GET /files/:id
   // Return file by fileId
-  static async getShow(request, response) {
+  static async getShow (request, response) {
     // Retrieve the user based on the token
     const token = request.headers['x-token'];
     if (!token) { return response.status(401).json({ error: 'Unauthorized' }); }
@@ -112,13 +112,13 @@ class FilesController {
       name: fileDocument.name,
       type: fileDocument.type,
       isPublic: fileDocument.isPublic,
-      parentId: fileDocument.parentId,
+      parentId: fileDocument.parentId
     });
   }
 
   // GET /files
   // Return the files attached to the user
-  static async getIndex(request, response) {
+  static async getIndex (request, response) {
     // Retrieve the user based on the token
     const token = request.headers['x-token'];
     if (!token) { return response.status(401).json({ error: 'Unauthorized' }); }
@@ -133,7 +133,7 @@ class FilesController {
     let aggregateData = [
       { $match: aggregationMatch },
       { $skip: pagination * 20 },
-      { $limit: 20 },
+      { $limit: 20 }
     ];
     if (parentId === 0) aggregateData = [{ $skip: pagination * 20 }, { $limit: 20 }];
 
@@ -148,7 +148,7 @@ class FilesController {
         name: item.name,
         type: item.type,
         isPublic: item.isPublic,
-        parentId: item.parentId,
+        parentId: item.parentId
       };
       filesArray.push(fileItem);
     });
