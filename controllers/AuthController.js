@@ -5,6 +5,9 @@ import dbClient from '../utils/db';
 import findUserByToken from '../utils/helper';
 
 class AuthController {
+    /**
+     * parses header string to return token
+     */
   static async getConnect(req, res) {
     const Authorization = req.header('Authorization') || '';
 
@@ -33,6 +36,9 @@ class AuthController {
     return res.status(200).send({ token });
   }
 
+  /**
+   * Removes connection token thereby disconnecting user
+   */
   static async getDisconnect(req, res) {
     const token = req.headers['x-token'];
     const userId = await findUserByToken(req);
