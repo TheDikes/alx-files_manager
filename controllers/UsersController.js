@@ -1,8 +1,8 @@
 import { ObjectId } from 'mongodb';
 import sha1 from 'sha1';
 import Queue from 'bull';
-import findUserByToken from '../utils/helper';
 import dbClient from '../utils/db';
+import redisClient from '../utils/redis';
 
 const userQueue = new Queue('userQueue');
 
@@ -45,26 +45,18 @@ class UsersController {
     return response.status(201).send(user);
   }
 
-  /**
-   * Should retrieve the user base on the token used
-   */
   static async getMe(request, response) {
-    const token = request.headers['x-token'];
-    if (!token) { return response.status(401).json({ error: 'Unauthorized' }); }
+    const token = request.header('X-Token') || null;
+    if (!token) return response.status(401).send({ error: 'Unauthorized' });
 
-    // Retrieve the user based on the token
-    const userId = await findUserByToken(request);
-    if (!userId) return response.status(401).send({ error: 'Unauthorized' });
+    const redisToken = await redisClient.get(`auth_${token}`);
+    if (!redisToken) return response.status(401).send({ error: 'Unauthorized' });
 
-    const user = await dbClient.users.findOne({ _id: ObjectId(userId) });
-
+    const user = await dbClient.db.collection('users').findOne({ _id: ObjectId(redisToken) });
     if (!user) return response.status(401).send({ error: 'Unauthorized' });
+    delete user.password;
 
-    const processedUser = { id: user._id, ...user };
-    delete processedUser._id;
-    delete processedUser.password;
-    // Return the user object (email and id only)
-    return response.status(200).send(processedUser);
+    return response.status(200).send({ id: user._id, email: user.email });
   }
 }
 
