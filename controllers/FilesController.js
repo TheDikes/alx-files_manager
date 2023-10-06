@@ -1,4 +1,4 @@
-import { ObjectID } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 import Queue from 'bull';
@@ -30,7 +30,7 @@ class FilesController {
     if (!data && !['folder'].includes(type)) { return response.status(400).json({ error: 'Missing data' }); }
     // parentId (optional) as ID of the parent (default 0-> root)
     if (parentId !== 0) {
-      const parentFileArray = await dbClient.files.find({ _id: ObjectID(parentId) }).toArray();
+      const parentFileArray = await dbClient.files.find({ _id: ObjectId(parentId) }).toArray();
       if (parentFileArray.length === 0) return response.status(400).json({ error: 'Parent not found' });
       const file = parentFileArray[0];
       if (file.type !== 'folder') return response.status(400).json({ error: 'Parent is not a folder' });
@@ -39,14 +39,14 @@ class FilesController {
     // if no data, and not a folder, error
     if (!data && type !== 'folder') return response.status(400).json({ error: 'Missing Data' });
 
-    // if type is folder then insert into DB, owner is ObjectID(userId)
+    // if type is folder then insert into DB, owner is ObjectId(userId)
     if (type === 'folder') {
       fileInserted = await dbClient.files.insertOne({
-        userId: ObjectID(userId),
+        userId: ObjectId(userId),
         name,
         type,
         isPublic,
-        parentId: parentId === 0 ? parentId : ObjectID(parentId),
+        parentId: parentId === 0 ? parentId : ObjectId(parentId),
       });
     // if not folder, store file in DB unscrambled
     } else {
@@ -68,11 +68,11 @@ class FilesController {
 
       // Insert into the DB
       fileInserted = await dbClient.files.insertOne({
-        userId: ObjectID(userId),
+        userId: ObjectId(userId),
         name,
         type,
         isPublic,
-        parentId: parentId === 0 ? parentId : ObjectID(parentId),
+        parentId: parentId === 0 ? parentId : ObjectId(parentId),
         localPath,
       });
 
@@ -97,13 +97,13 @@ class FilesController {
     if (!token) { return response.status(401).json({ error: 'Unauthorized' }); }
     const keyID = await redisClient.get(`auth_${token}`);
     if (!keyID) { return response.status(401).json({ error: 'Unauthorized' }); }
-    const user = await dbClient.db.collection('users').findOne({ _id: ObjectID(keyID) });
+    const user = await dbClient.db.collection('users').findOne({ _id: ObjectId(keyID) });
     if (!user) { return response.status(401).json({ error: 'Unauthorized' }); }
 
     const idFile = request.params.id || '';
     const fileDocument = await dbClient.db
       .collection('files')
-      .findOne({ _id: ObjectID(idFile), userId: user._id });
+      .findOne({ _id: ObjectId(idFile), userId: user._id });
     if (!fileDocument) return response.status(404).send({ error: 'Not found' });
 
     return response.send({
@@ -126,7 +126,7 @@ class FilesController {
     if (!keyID) { return response.status(401).json({ error: 'Unauthorized' }); }
     const parentId = request.query.parentId || '0';
     const pagination = request.query.page || 0;
-    const user = await dbClient.db.collection('users').findOne({ _id: ObjectID(keyID) });
+    const user = await dbClient.db.collection('users').findOne({ _id: ObjectId(keyID) });
     if (!user) response.status(401).json({ error: 'Unauthorized' });
 
     const aggregationMatch = { $and: [{ parentId }] };

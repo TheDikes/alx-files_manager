@@ -1,4 +1,4 @@
-import { ObjectID } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import sha1 from 'sha1';
 import Queue from 'bull';
 import findUserByToken from '../utils/helper';
@@ -56,7 +56,7 @@ class UsersController {
     const userId = await findUserByToken(request);
     if (!userId) return response.status(401).send({ error: 'Unauthorized' });
 
-    const user = await dbClient.users.findOne({ _id: ObjectID(userId) });
+    const user = await dbClient.users.findOne({ _id: ObjectId(userId) });
 
     if (!user) return response.status(401).send({ error: 'Unauthorized' });
 
