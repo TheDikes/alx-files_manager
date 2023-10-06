@@ -11,6 +11,6 @@ async function findUserByToken(req) {
   return userId || null;
 }
 
-export default {
+export {
   findUserByToken,
 };
