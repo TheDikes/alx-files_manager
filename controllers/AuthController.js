@@ -5,7 +5,7 @@ import dbClient from '../utils/db';
 import findUserByToken from '../utils/helper';
 
 class AuthController {
-    /**
+  /**
      * parses header string to return token
      */
   static async getConnect(req, res) {

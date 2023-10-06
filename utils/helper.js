@@ -1,6 +1,5 @@
 import redisClient from './redis';
 
-
 async function getToken(req) {
   const token = req.headers['x-token'];
   return `auth_${token}`;
@@ -12,7 +11,6 @@ async function findUserByToken(req) {
   return userId || null;
 }
 
-
-export {
+export default {
   findUserByToken,
 };
